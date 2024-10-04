@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GDSC Web Team Layout</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Dancing+Script&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <script>
+   
+    document.addEventListener("DOMContentLoaded", () => {
+      const body = document.body;
+      const maxSparkles = 50000;
+      const sparkles = [];
+
+      let lastCreatedAt = 0;
+      const throttleDelay = 20; // ms
+
+      function createSparkle(x, y) {
+        if (sparkles.length >= maxSparkles) {
+          const oldSparkle = sparkles.shift();
+          oldSparkle.remove();
+        }
+
+        const sparkle = document.createElement("div");
+        sparkle.className = "sparkle";
+        sparkle.style.left = `${x}px`;
+        sparkle.style.top = `${y}px`;
+        sparkle.style.backgroundColor = getRandomColor();
+
+        body.appendChild(sparkle);
+        sparkles.push(sparkle);
+
+        sparkle.addEventListener("animationend", () => {
+          const index = sparkles.indexOf(sparkle);
+          if (index > -1) {
+            sparkles.splice(index, 1);
+          }
+          sparkle.remove();
+        });
+      }
+
+      function getRandomColor() {
+        const hue = Math.random() * 360;
+        return `hsl(${hue}, 100%, 50%)`;
+      }
+
+      function handleMouseMove(e) {
+        const now = Date.now();
+        if (now - lastCreatedAt > throttleDelay) {
+          createSparkle(e.clientX, e.clientY);
+          lastCreatedAt = now;
+        }
+      }
+
+      // Use passive event listener for better scrolling performance
+      document.addEventListener("mousemove", handleMouseMove, {
+        passive: true,
+      });
+
+      // Cleans up sparkles when leaving the page
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          sparkles.forEach((sparkle) => sparkle.remove());
+          sparkles.length = 0;
+        }
+      });
+    });
+  </script>
+  <body>
+    <div class="container">
+      <div class="card red">
+        <svg
+          class="web-svg"
+          viewBox="0 0 100 100"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M50 0 L100 50 L50 100 L0 50 Z"
+            fill="none"
+            stroke="white"
+            stroke-width="2"
+          />
+          <path
+            d="M50 0 L50 100 M0 50 L100 50"
+            stroke="white"
+            stroke-width="1"
+          />
+          <path
+            d="M25 25 L75 75 M75 25 L25 75"
+            stroke="white"
+            stroke-width="1"
+          />
+          <circle cx="50" cy="50" r="5" fill="white" />
+        </svg>
+      </div>
+      <div class="card beige number">2604</div>
+      <div class="card purple">
+        <svg class="icon" viewBox="0 0 24 24" width="48" height="48">
+          <path
+            d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+          />
+        </svg>
+      </div>
+      <div class="card black name">Muskan Kumari</div>
+      <div class="card green">WORKS</div>
+      <div class="card beige fear-failures">Fear & Failures</div>
+    </div>
+  </body>
+</html>
